@@ -1,0 +1,30 @@
+language: java
+jdk:
+  - oraclejdk8
+
+before-install:
+  - sudo apt-get -qq update
+  - sudo apt-get -qq install build-essential cmake pkg-config libpng12-0 libpng12-dev libpng++-dev libpng3
+  - sudo apt-get -qq install libpnglite-dev libpngwriter0-dev libpngwriter0c2 zlib1g-dbg zlib1g zlib1g-dev pngtools libtiff4-dev
+  - sudo apt-get -qq install libtiff4 libtiffxx0c2 libtiff-tools libjpeg8 libjpeg8-dev libjpeg8-dbg libjpeg-progs ffmpeg libavcodec-dev
+  - sudo apt-get -qq install libavcodec52 libavformat52 libavformat-dev libgstreamer0.10-0-dbg libgstreamer0.10-0 libgstreamer0.10-dev
+  - sudo apt-get install libxine1-ffmpeg libxine-dev libxine1-bin libunicap2 libunicap2-dev libdc1394-22-dev libdc1394-22 libdc1394-utils
+  - sudo apt-get -qq install swig libv4l-0 libv4l-dev
+  - sudo apt-get -qq install libpng-dev libjpeg-dev libxxf86vm1 libxxf86vm-dev libxi-dev libxrandr-dev
+  - sudo apt-get -qq install mesa-common-dev
+  - sudo apt-get -qq install mesa-utils-extra libgl1-mesa-dev libglapi-mesa
+  - sudo apt-get -qq install libgles2-mesa-dev
+  - sudo apt-get -qq install freeglut3 freeglut3-dbg freeglut3-dev libmgl-glut5
+  - sudo apt-get -qq install libxmu-dev libxi-dev
+  - sudo apt-get -qq install libudev-dev
+
+install:
+  - git clone --quiet https://github.com/bytedeco/javacpp.git > /dev/null
+  - "echo 'Building and installing javacpp'"
+  - "(cd javacpp &&  mvn clean install -DskipTests) > /dev/null"
+  - ./cppbuild.sh -platform linux-arm install opencv
+  - sudo ldconfig
+
+script:
+  - "(cd opencv && mvn clean install -DskipTests -Dplatform.name=linux-arm)"
+  - ls -l */target/**
